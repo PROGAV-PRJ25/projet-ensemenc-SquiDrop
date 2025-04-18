@@ -1,102 +1,59 @@
 public class Simulation
 {
-    public double Vitesse { get; set; }
-    public Simulation(double vitesse)
-    {
-        Vitesse = vitesse;
-    }
+    public double Vitesse { get; set; } // Inutilisé dans cette version
+
+    public Simulation(double vitesse) => Vitesse = vitesse;
 
     public void Simuler(string[,] plateau)
     {
-        int longueur = plateau.GetLength(0);
+        int hauteur = plateau.GetLength(0);
         int largeur = plateau.GetLength(1);
-
-        bool conditionPlante = false;
-        int posX = 0;
-        int posY = 0;
+        
+        int posX = 0, posY = 0; // Position du curseur
         bool quitter = false;
 
         while (!quitter)
         {
-            for (int time = 0; time < 10; time++)
+            Console.Clear();
+            Console.WriteLine("=== POTAGER ===");
+
+            // Affiche le plateau avec curseur
+            for (int y = 0; y < hauteur; y++)
             {
-                Console.Clear();
-                Console.WriteLine("\nIl potagio :\n");
-
-                // Affichage du plateau avec curseur
-                for (int i = 0; i < longueur; i++)
+                for (int x = 0; x < largeur; x++)
                 {
-                    for (int j = 0; j < largeur; j++)
+                    bool estCurseur = (y == posY && x == posX);
+                    string caseActuelle = plateau[y, x];
+
+                    Console.BackgroundColor = estCurseur ? ConsoleColor.White : ConsoleColor.Black;
+                    Console.ForegroundColor = caseActuelle switch
                     {
-                        string caseContenue = plateau[i, j];
-                        ConsoleColor couleur = ConsoleColor.Gray;
+                        "E" => ConsoleColor.DarkYellow,  // Terre vide
+                        "P" => ConsoleColor.Green,       // Plante
+                        _ => ConsoleColor.Gray
+                    };
 
-                        // Couleur selon contenu
-                        switch (caseContenue)
-                        {
-                            case "E": couleur = ConsoleColor.Blue; break;
-                            case "T": couleur = ConsoleColor.Green; break;
-                            case "P": 
-                            if(time%2 ==1 && conditionPlante == false)
-                            {
-                                couleur = ConsoleColor.Gray;
-                            }
-                            else
-                            {
-                                couleur = ConsoleColor.DarkGreen;
-                            }
-                            break;
-                            case "S": couleur = ConsoleColor.Yellow; break;
-                        }
-
-                        // Curseur actif ?
-                        if (i == posY && j == posX)
-                        {
-                            Console.BackgroundColor = ConsoleColor.White;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = couleur;
-                        }
-
-                        Console.Write($"[{caseContenue}]");
-                        Console.ResetColor();
-                    }
-                    Console.WriteLine();
+                    Console.Write($"[{caseActuelle}]");
+                    Console.ResetColor();
                 }
+                Console.WriteLine();
+            }
 
-                // Instructions
-                Console.WriteLine("\nUtilise les flèches pour déplacer le curseur.");
-                Console.WriteLine("Appuie sur Entrée pour sélectionner une case.");
-                Console.WriteLine("Appuie sur 'A' pour quitter.");
+            // Légende et commandes
+            Console.WriteLine("\nLégende: [E] Terre vide | [P] Plante");
+            Console.WriteLine("Flèches: Déplacer | Espace: Planter/Récolter | Q: Quitter");
 
-                // Lire la touche
-                ConsoleKey key = Console.ReadKey(true).Key;
-
-                switch (key)
-                {
-                    case ConsoleKey.UpArrow:
-                        if (posY > 0) posY--;
-                        break;
-                    case ConsoleKey.DownArrow:
-                        if (posY < longueur - 1) posY++;
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        if (posX > 0) posX--;
-                        break;
-                    case ConsoleKey.RightArrow:
-                        if (posX < largeur - 1) posX++;
-                        break;
-                    case ConsoleKey.Enter:
-                        Console.WriteLine($"\nTu as sélectionné la case en ({posY}, {posX}) contenant : {plateau[posY, posX]}");
-                        Console.WriteLine("Appuie sur une touche pour continuer...");
-                        Console.ReadKey(true);
-                        break;
-                    case ConsoleKey.A:
-                        quitter = true;
-                        break;
-                }
+            // Gestion des touches
+            switch (Console.ReadKey(true).Key)
+            {
+                case ConsoleKey.UpArrow when posY > 0: posY--; break;
+                case ConsoleKey.DownArrow when posY < hauteur - 1: posY++; break;
+                case ConsoleKey.LeftArrow when posX > 0: posX--; break;
+                case ConsoleKey.RightArrow when posX < largeur - 1: posX++; break;
+                case ConsoleKey.Spacebar:
+                    plateau[posY, posX] = plateau[posY, posX] == "E" ? "P" : "E"; // Alterne entre plante et terre
+                    break;
+                case ConsoleKey.Q: quitter = true; break;
             }
         }
     }
