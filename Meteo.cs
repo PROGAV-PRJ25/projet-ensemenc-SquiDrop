@@ -8,8 +8,8 @@ public class Meteo
 
     public Meteo(float pluie, float luminosite, float temperature, bool intemperie)
     {
-        QuantitePluie = Math.Clamp(pluie, 0, 1);
-        Luminosite = Math.Clamp(luminosite, 0.1f, 1);
+        QuantitePluie = Math.Clamp(pluie, 0, 1);  // Garantit que la pluie est toujours entre 0% et 100%
+        Luminosite = Math.Clamp(luminosite, 0.1f, 1);   // Garantit que la luminosité est toujours entre 10% et 100%
         Temperature = temperature;
         Intemperie = intemperie;
 

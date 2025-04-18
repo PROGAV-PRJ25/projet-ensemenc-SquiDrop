@@ -30,8 +30,8 @@ public abstract class Saison
 
         float pluieAujourdhui;
         float luminositeAujourdhui;
-        bool intemperieAujourdhui;
         float temperature;
+        bool intemperieAujourdhui;
 
         // 1. Déterminer s'il pleut aujourd'hui
         if (rand.NextSingle() < ProbabilitePluie)
@@ -50,12 +50,12 @@ public abstract class Saison
 
         // 3. Température aléatoire dans la plage saisonnière
         temperature = TemperatureMoyenne + (rand.NextSingle() * 2 - 1) * VariationTemperature;
-                         
+
 
         // 4. Déterminer s'il y a une intempérie
         intemperieAujourdhui = rand.NextSingle() < ProbabiliteIntemperie;
 
-        
+
 
         return new Meteo(pluieAujourdhui, luminositeAujourdhui, temperature, intemperieAujourdhui);
     }
